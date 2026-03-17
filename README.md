@@ -2,7 +2,7 @@
 
 Una aplicación web moderna y elegante para gestionar tus finanzas personales, adaptada específicamente al contexto chileno (AFP, Salud, UF, etc.).
 
-![Preview](preview.png)
+![Preview]()
 
 ## ✨ Características
 
