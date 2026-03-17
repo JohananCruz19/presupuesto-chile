@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Sueldo Líquido Chile 2026 | Presupuesto Inteligente</title>
+    <meta name="description" content="Calcula tu sueldo líquido en Chile 2026 con valores actualizados de impuestos, AFP y salud. Gestiona tu presupuesto con la regla 50/30/20.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="ph ph-currency-circle-dollar"></i>
+                <div class="logo-text">
+                    <span>Presupuesto</span>
+                    <span class="logo-accent">Chile</span>
+                </div>
+                <span class="year-badge" id="year-badge">2026</span>
+            </div>
+            <nav>
+                <button class="nav-btn active" data-view="salary">
+                    <i class="ph ph-calculator"></i>
+                    <span>Sueldo</span>
+                </button>
+                <button class="nav-btn" data-view="budget">
+                    <i class="ph ph-chart-pie"></i>
+                    <span>Presupuesto</span>
+                </button>
+            </nav>
+        </header>
+
+        <main>
+            <!-- VISTA: CALCULADORA DE SUELDO -->
+            <section id="view-salary" class="view">
+                <!-- Info Banner -->
+                <div class="info-banner">
+                    <div class="info-item">
+                        <i class="ph ph-coin"></i>
+                        <span>UF: <strong id="uf-value">—</strong></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="ph ph-trend-up"></i>
+                        <span>Tope: <strong id="tope-imponible">—</strong></span>
+                    </div>
+                </div>
+
+                <!-- Hero -->
+                <div class="hero-card">
+                    <h1>Calculadora de Sueldo Líquido 2026</h1>
+                    <p>Calcula tu sueldo real con los valores oficiales actualizados del SII y Superintendencia de Pensiones.</p>
+                </div>
+
+                <div class="calculator-grid">
+                    <!-- Inputs -->
+                    <div class="card input-card">
+                        <div class="card-header">
+                            <i class="ph ph-money"></i>
+                            <h2>Ingresos Brutos</h2>
+                        </div>
+                        
+                        <div class="field">
+                            <label>Sueldo Bruto Mensual</label>
+                            <div class="input-wrapper">
+                                <span class="currency">$</span>
+                                <input type="number" id="gross-salary" placeholder="1500000" value="1500000" min="0">
+                            </div>
+                            <span class="hint">Ingresa tu sueldo antes de descuentos</span>
+                        </div>
+
+                        <div class="field">
+                            <label>Tipo de Contrato</label>
+                            <div class="select-wrapper">
+                                <i class="ph ph-file-text"></i>
+                                <select id="contract-type">
+                                    <option value="indefinido">Indefinido (0.6% Cesantía)</option>
+                                    <option value="plazo_fijo">Plazo Fijo (0% Cesantía)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Quick amounts -->
+                        <div class="quick-amounts">
+                            <button class="quick-btn" data-amount="800000">$800K</button>
+                            <button class="quick-btn" data-amount="1000000">$1M</button>
+                            <button class="quick-btn" data-amount="1500000">$1.5M</button>
+                            <button class="quick-btn" data-amount="2000000">$2M</button>
+                            <button class="quick-btn" data-amount="2500000">$2.5M</button>
+                            <button class="quick-btn" data-amount="3000000">$3M</button>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="card results-card">
+                        <div class="card-header">
+                            <i class="ph ph-receipt"></i>
+                            <h2>Desglose de Descuentos</h2>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div class="chart-container salary-chart-container">
+                            <canvas id="salary-chart"></canvas>
+                        </div>
+
+                        <ul class="breakdown-list">
+                            <li>
+                                <div class="deduction-info">
+                                    <span class="deduction-name">AFP</span>
+                                    <span class="deduction-rate">10.77%</span>
+                                </div>
+                                <span class="amount negative" id="val-afp">—</span>
+                            </li>
+                            <li>
+                                <div class="deduction-info">
+                                    <span class="deduction-name">Salud</span>
+                                    <span class="deduction-rate">7%</span>
+                                </div>
+                                <span class="amount negative" id="val-health">—</span>
+                            </li>
+                            <li>
+                                <div class="deduction-info">
+                                    <span class="deduction-name">Seguro Cesantía</span>
+                                    <span class="deduction-rate" id="unemployment-rate">0.6%</span>
+                                </div>
+                                <span class="amount negative" id="val-unemployment">—</span>
+                            </li>
+                            <li class="tax-row">
+                                <div class="deduction-info">
+                                    <span class="deduction-name">Impuesto Único 2da Categoría</span>
+                                    <span class="deduction-rate" id="val-tax-bracket">Exento</span>
+                                </div>
+                                <span class="amount negative" id="val-tax">—</span>
+                            </li>
+                        </ul>
+
+                        <div class="tax-info">
+                            <span>Tasa efectiva: <strong id="val-effective-rate">0%</strong></span>
+                        </div>
+
+                        <div class="total-result">
+                            <div>
+                                <span class="total-label">Sueldo Líquido</span>
+                                <span class="total-hint">Lo que realmente recibes</span>
+                            </div>
+                            <strong id="val-liquid">—</strong>
+                        </div>
+
+                        <button id="add-to-budget-btn" class="primary-btn">
+                            <span>Usar en Presupuesto</span>
+                            <i class="ph ph-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info Section -->
+                <div class="info-section">
+                    <h3><i class="ph ph-info"></i> ¿Cómo se calcula?</h3>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <i class="ph ph-piggy-bank"></i>
+                            <h4>AFP (10.77%)</h4>
+                            <p>Cotización obligatoria para tu pensión. Se aplica sobre el tope imponible de <strong>89.9 UF</strong> (2026).</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="ph ph-heartbeat"></i>
+                            <h4>Salud (7%)</h4>
+                            <p>Cotización para FONASA o ISAPRE. También con tope de 89.9 UF mensuales.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="ph ph-shield-check"></i>
+                            <h4>Cesantía (0.6%)</h4>
+                            <p>Solo para contratos indefinidos. Plazo fijo no paga este seguro.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="ph ph-receipt-tax"></i>
+                            <h4>Impuesto</h4>
+                            <p>Impuesto Único de 2da Categoría. Progresivo según tu renta líquida imponible.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VISTA: PRESUPUESTO -->
+            <section id="view-budget" class="view hidden">
+                <!-- Budget Header -->
+                <div class="budget-header">
+                    <div class="balance-card primary">
+                        <div class="balance-icon">
+                            <i class="ph ph-wallet"></i>
+                        </div>
+                        <div class="balance-info">
+                            <span class="balance-label">Disponible</span>
+                            <h2 id="budget-available">$0</h2>
+                        </div>
+                    </div>
+                    <div class="balance-card secondary">
+                        <div class="balance-icon">
+                            <i class="ph ph-receipt"></i>
+                        </div>
+                        <div class="balance-info">
+                            <span class="balance-label">Total Gastos</span>
+                            <h2 id="budget-expenses">$0</h2>
+                        </div>
+                    </div>
+                    <div class="balance-card tertiary">
+                        <div class="balance-icon">
+                            <i class="ph ph-trend-up"></i>
+                        </div>
+                        <div class="balance-info">
+                            <span class="balance-label">Meta Ahorro (20%)</span>
+                            <h2 id="budget-savings-target">$0</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="budget-content">
+                    <!-- Expenses List -->
+                    <div class="card expenses-card">
+                        <div class="card-header">
+                            <div>
+                                <i class="ph ph-list-dashes"></i>
+                                <h2>Gastos Mensuales</h2>
+                            </div>
+                            <button class="icon-btn primary" id="add-expense-btn" title="Agregar gasto">
+                                <i class="ph ph-plus"></i>
+                            </button>
+                        </div>
+                        <div class="expense-categories" id="expense-list">
+                            <div class="empty-state">
+                                <i class="ph ph-receipt"></i>
+                                <p>Agrega gastos para ver tu resumen</p>
+                            </div>
+                        </div>
+                        <button class="text-btn" id="reset-data-btn">
+                            <i class="ph ph-trash"></i>
+                            Reiniciar datos
+                        </button>
+                    </div>
+
+                    <!-- Analysis 50/30/20 -->
+                    <div class="card analysis-card">
+                        <div class="card-header">
+                            <i class="ph ph-chart-pie-slice"></i>
+                            <h2>Regla 50/30/20</h2>
+                        </div>
+                        
+                        <!-- Budget Chart -->
+                        <div class="chart-container budget-chart-container">
+                            <canvas id="budget-chart"></canvas>
+                        </div>
+
+                        <div class="bar-chart">
+                            <div class="bar-group">
+                                <div class="bar-header">
+                                    <label>
+                                        <i class="ph ph-house"></i>
+                                        Necesidades (50%)
+                                    </label>
+                                    <span class="bar-label" id="label-needs">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="fill needs" style="width: 0%" id="bar-needs"></div>
+                                </div>
+                                <span class="bar-sublabel">Vivienda, cuentas, supermercado, transporte</span>
+                            </div>
+                            
+                            <div class="bar-group">
+                                <div class="bar-header">
+                                    <label>
+                                        <i class="ph ph-confetti"></i>
+                                        Deseos (30%)
+                                    </label>
+                                    <span class="bar-label" id="label-wants">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="fill wants" style="width: 0%" id="bar-wants"></div>
+                                </div>
+                                <span class="bar-sublabel">Ocio, entretenimiento, gustos</span>
+                            </div>
+                            
+                            <div class="bar-group">
+                                <div class="bar-header">
+                                    <label>
+                                        <i class="ph ph-piggy-bank"></i>
+                                        Ahorro (20%)
+                                    </label>
+                                    <span class="bar-label" id="label-savings">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="fill savings" style="width: 0%" id="bar-savings"></div>
+                                </div>
+                                <span class="bar-sublabel">Inversiones, fondos de emergencia</span>
+                            </div>
+                        </div>
+
+                        <div class="rule-explanation">
+                            <i class="ph ph-lightbulb"></i>
+                            <p><strong>La regla 50/30/20:</strong> Destina el 50% de tu sueldo líquido a necesidades básicas, 30% a gustos y ocio, y ahorra al menos el 20%.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Valores actualizados Marzo 2026 · <a href="#" onclick="window.open('https://www.sii.cl', '_blank')">SII</a> · <a href="#" onclick="window.open('https://www.spensiones.cl', '_blank')">SP</a></p>
+        </footer>
+
+        <!-- MODAL: AGREGAR GASTO -->
+        <div id="modal-expense" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <i class="ph ph-plus-circle"></i>
+                        <h2>Nuevo Gasto</h2>
+                    </div>
+                    <button class="close-modal">
+                        <i class="ph ph-x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="field">
+                        <label>Categoría</label>
+                        <div class="select-wrapper">
+                            <i class="ph ph-tag"></i>
+                            <select id="expense-category">
+                                <option value="vivienda">🏠 Vivienda</option>
+                                <option value="cuentas">💡 Cuentas Básicas</option>
+                                <option value="supermercado">🛒 Supermercado</option>
+                                <option value="transporte">🚌 Transporte</option>
+                                <option value="salud">🏥 Salud / Farmacia</option>
+                                <option value="deudas">💳 Deudas / Créditos</option>
+                                <option value="ocio">🍿 Ocio / Entretenimiento</option>
+                                <option value="otros">📦 Otros</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Nombre (Opcional)</label>
+                        <div class="input-wrapper">
+                            <i class="ph ph-pencil"></i>
+                            <input type="text" id="expense-name" placeholder="Ej: Lider, Copec, Arriendo...">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Monto</label>
+                        <div class="input-wrapper">
+                            <span class="currency">$</span>
+                            <input type="number" id="expense-amount" placeholder="0" min="1">
+                        </div>
+                    </div>
+                    <button id="save-expense-btn" class="primary-btn">
+                        <i class="ph ph-check"></i>
+                        <span>Guardar Gasto</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
