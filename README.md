@@ -2,16 +2,16 @@
 
 Una aplicación web moderna y elegante para gestionar tus finanzas personales, adaptada específicamente al contexto chileno (AFP, Salud, UF, etc.).
 
-![Preview](https://via.placeholder.com/800x400?text=Vista+Previa+App)
+![Preview](preview.png)
 
 ## ✨ Características
 
 ### 💰 Calculadora de Sueldo Líquido
 Convierte tu sueldo bruto a líquido automáticamente considerando:
-- **AFP**: 11% (Promedio del sistema).
+- **AFP**: 10.77% (Promedio del sistema).
 - **Salud**: 7% (Fonasa/Isapre base).
 - **Seguro de Cesantía**: 0.6% (Indefinido) o 0% (Plazo Fijo).
-- **Impuesto Único**: Cálculo automático según tramos mensuales del SII (2024).
+- **Impuesto Único**: Cálculo automático según tramos mensuales del SII y valores de UF del **2026**.
 
 ### 📊 Gestión de Presupuesto
 - **Integración Automática**: Tu sueldo líquido se convierte en tu presupuesto inicial.
@@ -32,8 +32,9 @@ Convierte tu sueldo bruto a líquido automáticamente considerando:
 ## 🛠️ Tecnologías
 
 - **HTML5**
-- **CSS3** (Variables, Flexbox, Grid)
-- **JavaScript** (Vanilla ES6)
+- **CSS3** (Variables, Flexbox, Grid, Dark Mode Premium)
+- **JavaScript** (Vanilla ES6, LocalStorage)
+- **Chart.js** (Visualizaciones analíticas 50/30/20)
 - **Phosphor Icons**
 
 ---
