@@ -396,6 +396,11 @@ function updateSalary() {
     if (els.results.effectiveRate) {
         els.results.effectiveRate.textContent = `${result.effectiveTaxRate}%`;
     }
+
+    const unemploymentRateEl = document.getElementById('unemployment-rate');
+    if (unemploymentRateEl) {
+        unemploymentRateEl.textContent = contract === 'indefinido' ? '0.6%' : '0%';
+    }
     
     // Actualizar gráfico
     initSalaryChart(result);
@@ -613,6 +618,15 @@ function attachEventListeners() {
         });
     });
     
+    // Quick-amount buttons
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const amount = btn.dataset.amount;
+            els.inputs.gross.value = amount;
+            updateSalary();
+        });
+    });
+
     // Actions
     els.btns.addToBudget?.addEventListener('click', () => {
         const budgetBtn = Array.from(els.nav).find(b => b.dataset.view === 'budget');
